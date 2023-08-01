@@ -6,6 +6,7 @@ const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 exports.register = async (req, res, next) => {
+	console.log("Api Calling")
 	try {
 		const {
 			username,
@@ -15,9 +16,10 @@ exports.register = async (req, res, next) => {
 			googleId,
 			googleToken,
 			registerType,
+			fullName,
 		} = req.body;
 		console.log('email', req.body);
-		if (registerType === 'email') {
+		// if (registerType === 'email') {
 			// Check if user with the same email already exists
 			const existingUser = await User.findOne({ email });
 			if (existingUser) {
@@ -28,11 +30,11 @@ exports.register = async (req, res, next) => {
 			}
 			// Check if passwords match
 
-			if (password !== confirmPassword) {
-				return res
-					.status(400)
-					.json({ status: 'fail', showableMessage: 'Passwords do not match' });
-			}
+			// if (password !== confirmPassword) {
+			// 	return res
+			// 		.status(400)
+			// 		.json({ status: 'fail', showableMessage: 'Passwords do not match' });
+			// }
 
 			
 
@@ -41,78 +43,81 @@ exports.register = async (req, res, next) => {
 			const hashedPassword = await bcrypt.hash(password, salt);
 
 			// Create new user
-			const newUser = new User({
+			const newUser = await User.create({
+				fullName,
 				username,
 				email,
-				joinedType:registerType,
+				// joinedType:registerType,
 				password: hashedPassword,
 			});
 
 			// Save user to database
-			await newUser.save();
+			// await newUser.save();
 
 			// Create JWT token
 			const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
 				expiresIn: '1h',
 			});
-			await newUser.save();
+			// await newUser.save();
 			// Respond with token and user data
 			return res.status(201).json({
 				status: 'success',
-				data: { token, user: { id: newUser._id, email: newUser.email } },
+				data: { token, user: { id: newUser?._id, email: newUser.email } },
 				showableMessage: 'User registered successfully',
 			});
-		} else if (registerType === 'google') {
-			// Validate Google ID and token
-			const ticket = await client.verifyIdToken({
-				idToken: googleToken,
-				audience: process.env.GOOGLE_CLIENT_ID,
-			});
-			const payload = ticket.getPayload();
+		// }
 
-			if (payload.sub !== googleId) {
-				return res.status(400).json({
-					status: 'fail',
-					showableMessage: 'Google ID does not match token',
-				});
-			}
+		//  else if (registerType === 'google') {
+		// 	// Validate Google ID and token
+		// 	const ticket = await client.verifyIdToken({
+		// 		idToken: googleToken,
+		// 		audience: process.env.GOOGLE_CLIENT_ID,
+		// 	});
+		// 	const payload = ticket.getPayload();
 
-			// Check if user with the same email already exists
-			const existingUser = await User.findOne({ email: payload.email });
-			if (existingUser) {
-				return res.status(409).json({
-					status: 'fail',
-					showableMessage: 'User with this email already exists',
-				});
-			}
+		// 	if (payload.sub !== googleId) {
+		// 		return res.status(400).json({
+		// 			status: 'fail',
+		// 			showableMessage: 'Google ID does not match token',
+		// 		});
+		// 	}
 
-			// Create new user
-			const newUser = new User({
-				username: payload.given_name,
-				email: payload.email,
-				googleId,
-				joinedType:registerType,
-			});
+		// 	// Check if user with the same email already exists
+		// 	const existingUser = await User.findOne({ email: payload.email });
+		// 	if (existingUser) {
+		// 		return res.status(409).json({
+		// 			status: 'fail',
+		// 			showableMessage: 'User with this email already exists',
+		// 		});
+		// 	}
 
-			// Save user to database
-			await newUser.save();
+		// 	// Create new user
+		// 	const newUser = new User({
+		// 		username: payload.given_name,
+		// 		email: payload.email,
+		// 		googleId,
+		// 		joinedType:registerType,
+		// 	});
 
-			// Create JWT token
-			const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
-				expiresIn: '1h',
-			});
+		// 	// Save user to database
+		// 	await newUser.save();
 
-			// Respond with token and user data
-			return res.status(201).json({
-				status: 'success',
-				data: { token, user: { id: newUser._id, email: newUser.email } },
-				showableMessage: 'User registered successfully',
-			});
-		} else {
-			return res
-				.status(400)
-				.json({ status: 'fail', showableMessage: 'Invalid register type' });
-		}
+		// 	// Create JWT token
+		// 	const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
+		// 		expiresIn: '1h',
+		// 	});
+
+		// 	// Respond with token and user data
+		// 	return res.status(201).json({
+		// 		status: 'success',
+		// 		data: { token, user: { id: newUser._id, email: newUser.email } },
+		// 		showableMessage: 'User registered successfully',
+		// 	});
+		// } else {
+		// 	return res
+		// 		.status(400)
+		// 		.json({ status: 'fail', showableMessage: 'Invalid register type' });
+		// }
 	} catch (error) {
 		console.error('Error in register:', error);
 		return res

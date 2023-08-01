@@ -18,10 +18,10 @@ const userSchema = new mongoose.Schema(
 				return !this.googleId;
 			},
 		},
-		joinedType: {
-			type: String,
-			required: true,
-		},
+		// joinedType: {
+		// 	type: String,
+		// 	required: true,
+		// },
 		googleId: {
 			type: String,
 			required: function () {
@@ -32,6 +32,7 @@ const userSchema = new mongoose.Schema(
 	},
 	{ timestamps: true }
 );
-autoPopulate(userSchema);
+// autoPopulate(userSchema);
 
-module.exports = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+module.exports = User

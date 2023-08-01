@@ -30,7 +30,7 @@ mongoose.connection.on('open', () => {
 		res.status(500).json({ message: 'Internal server error' });
 	});
 	// Start server
-	const PORT = process.env.PORT || 3060;
+	const PORT = process.env.PORT || 9000;
 	app.listen(PORT, () => {
 		console.log(`Server listening on port ${PORT}`);
 	});

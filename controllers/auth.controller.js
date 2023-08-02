@@ -128,72 +128,97 @@ exports.register = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
 	try {
-		const { email, password, googleId, googleToken, loginType } = req.body;
 
-		if (loginType === 'email') {
-			// Check if user with given email exists
-			const user = await User.findOne({ email });
-			if (!user) {
-				return res.status(401).json({
-					status: 'fail',
-					showableMessage: 'Invalid email or password',
-				});
-			}
+		const {email, password} = req.body
+		const user = await User.findOne({ email });
+	 		if (!user) {
+	 			return res.status(401).json({
+	 				status: 'fail',
+	 				showableMessage: 'Invalid email or password',
+	 			});
+	 		}
+				// Check if password is correct
+	 		const isPasswordCorrect = await bcrypt.compare(password, user.password);
+	 		if (!isPasswordCorrect) {
+	 			return res.status(401).json({
+	 				status: 'fail',
+	 				showableMessage: 'Invalid email or password',
+	 			});
+	 		}
 
-			// Check if password is correct
-			const isPasswordCorrect = await bcrypt.compare(password, user.password);
-			if (!isPasswordCorrect) {
-				return res.status(401).json({
-					status: 'fail',
-					showableMessage: 'Invalid email or password',
-				});
-			}
-
-			// Create JWT token
-			const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-				expiresIn: '1h',
+	 		// Create JWT token
+	 		const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+	 			expiresIn: '1h',
 			});
-
-			// Respond with token and user data
 			return res.json({
 				status: 'success',
 				data: { token, user: { id: user._id, email: user.email } },
 				showableMessage: 'Logged in successfully',
 			});
-		} else if (loginType === 'google') {
-			// Check if Google ID and token are valid
-			// ...
-			// Check if user with given Google ID exists
-			const user = await User.findOne({ googleId });
-			if (!user) {
-				return res.status(401).json({
-					status: 'fail',
-					showableMessage: 'Please signup with google',
-				});
-			}
-
-			// Create JWT token
-			const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-				expiresIn: '1h',
-			});
-
-			// Respond with token and user data
-			return res.json({
-				status: 'success',
-				data: { token, user: { id: user._id, email: user.email } },
-				showableMessage: 'Logged in successfully',
-			});
-		} else {
-			return res
-				.status(400)
-				.json({ status: 'fail', showableMessage: 'Invalid login type' });
 		}
-	} catch (error) {
-		console.error('Error in register:', error);
-		return res
-			.status(500)
-			.json({ status: 'fail', showableMessage: 'Internal server error' });
-	}
+	// 	const { email, password, googleId, googleToken, loginType } = req.body;
+
+	// 	if (loginType === 'email') {
+	// 		// Check if user with given email exists
+	// 		const user = await User.findOne({ email });
+	// 		if (!user) {
+	// 			return res.status(401).json({
+	// 				status: 'fail',
+	// 				showableMessage: 'Invalid email or password',
+	// 			});
+	// 		}
+
+	// 		// Check if password is correct
+	// 		const isPasswordCorrect = await bcrypt.compare(password, user.password);
+	// 		if (!isPasswordCorrect) {
+	// 			return res.status(401).json({
+	// 				status: 'fail',
+	// 				showableMessage: 'Invalid email or password',
+	// 			});
+	// 		}
+
+	// 		// Create JWT token
+	// 		const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+	// 			expiresIn: '1h',
+	// 		});
+
+	// 		// Respond with token and user data
+	// 		return res.json({
+	// 			status: 'success',
+	// 			data: { token, user: { id: user._id, email: user.email } },
+	// 			showableMessage: 'Logged in successfully',
+	// 		});
+	// 	} else if (loginType === 'google') {
+	// 		// Check if Google ID and token are valid
+	// 		// ...
+	// 		// Check if user with given Google ID exists
+	// 		// const user = await User.findOne({ googleId });
+	// 		// if (!user) {
+	// 		// 	return res.status(401).json({
+	// 		// 		status: 'fail',
+	// 		// 		showableMessage: 'Please signup with google',
+	// 		// 	});
+	// 		// }
+
+	// 		// Create JWT token
+	// 		const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+	// 			expiresIn: '1h',
+	// 		});
+
+			// Respond with token and user data
+			
+	// 	} else {
+	// 		return res
+	// 			.status(400)
+	// 			.json({ status: 'fail', showableMessage: 'Invalid login type' });
+	// 	}
+	  catch (error) {
+	 	console.error('Error in register:', error);
+	 	return res
+	 		.status(500)
+	 		.json({ status: 'fail', showableMessage: 'Internal server error' });
+	 }
+
 };
 
 exports.getUserIdByEmail = async (req, res) => {

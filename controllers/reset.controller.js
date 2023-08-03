@@ -45,6 +45,7 @@ exports.sendResetCode = async (req, res, next) => {
 
 		return res.json({
 			status: 'success',
+			userId:user._id,
 			showableMessage: 'Reset code sent successfully',
 		});
 	} catch (error) {

@@ -122,7 +122,7 @@ exports.register = async (req, res, next) => {
 		console.error('Error in register:', error);
 		return res
 			.status(500)
-			.json({ status: 'fail', showableMessage: 'Internal server error' });
+			.json({ status: 'fail', showableMessage: error.message});
 	}
 };
 

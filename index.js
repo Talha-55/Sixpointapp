@@ -22,7 +22,15 @@ mongoose.connection.on('open', () => {
 
 	// Routes
 	const authRoutes = require('./routes/auth.router');
+	const adminRoutes = require('./routes/admin/player.router');
+	const teamRoutes = require('./routes/admin/team.router');
+	const frontOfficerRoutes = require('./routes/admin/frontofficer.router');
+	const spacesRoutes = require('./routes/admin/spaces.router')
 	app.use('/api/auth', authRoutes);
+	app.use('/admin/player', adminRoutes);
+	app.use('/admin/team', teamRoutes);
+	app.use('/admin/frontOfficer', frontOfficerRoutes);
+	app.use('/admin/spaces', spacesRoutes)
 
 	// Error handling middleware
 	app.use((err, req, res, next) => {

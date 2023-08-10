@@ -5,28 +5,20 @@ const userSchema = new mongoose.Schema(
 	{
 		username: {
 			type: String,
-            unique: true,
+			required: true
 		},
 		email: {
 			type: String,
 			required: true,
 			unique: true,
+			match: [/.+\@.+\..+/, "Please enter a valid email address"]
 		},
 		password: {
 			type: String,
-			required: function () {
-				return !this.googleId;
-			},
+			required: true,
 		},
-		// joinedType: {
-		// 	type: String,
-		// 	required: true,
-		// },
-		googleId: {
-			type: String,
-			required: function () {
-				return !this.password;
-			},
+		DOB: {
+			type: Date,
 		},
 		status: { type: Number, default: 1 },
 	},

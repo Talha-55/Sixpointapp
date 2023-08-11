@@ -1,5 +1,5 @@
 const express = require('express');
-const { create, list, update, deleteTeam  } = require('../../controllers/admin/team.controller');
+const { create, list, update, deleteTeam  } = require('../../controllers/admin/team.controllers');
 const router = express.Router();
 
 

@@ -1,6 +1,6 @@
 
 const express = require('express');
-const { getAllPlayers, searchPlayres, createPlayerProfile, getPlayerById, editPlayer, deletePlayer } = require('../../controllers/admin/player.controller');
+const { getAllPlayers, searchPlayres, createPlayerProfile, getPlayerById, editPlayer, deletePlayer } = require('../../controllers/admin/player.controllers');
 const router = express.Router();
 
 

@@ -26,7 +26,9 @@ mongoose.connection.on('open', () => {
 	const teamRoutes = require('./routes/admin/team.router');
 	const frontOfficerRoutes = require('./routes/admin/frontofficer.router');
 	const spacesRoutes = require('./routes/admin/spaces.routers')
-	app.use('/api/auth', authRoutes);
+
+
+	app.use('/api/auth', authRoutes); 
 	app.use('/admin/player', adminRoutes);
 	app.use('/admin/team', teamRoutes);
 	app.use('/admin/frontOfficer', frontOfficerRoutes);

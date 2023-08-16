@@ -48,7 +48,7 @@ exports.deletePlayer = async (req, res) => {
 	}
 }
 
-// Username ya email se user search karne ke liye
+// Username or email search 
 exports.searchPlayres = async (req, res) => {
 	try {
 		const { username, email } = req.query;

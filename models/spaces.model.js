@@ -15,11 +15,12 @@ const SpacesSchema = new Schema({
         type: Number,
         required: true
     },
-    houseCredentials: String,
-    wifiPassword: String,
-    houseCodes: String,
-    alarmCodes: String,
-    garageCodes: String,
+    houseCredentials:  {type: String,},
+    wifiPassword:      {type:String,},
+    houseCodes:       {type:String,},
+    alarmCodes:      {type: String,},
+    garageCodes:    {type: String,},
+
     listOfTeams: [{
         type: ObjectId,
         ref: 'Team',  // 'Team' should match the name you used when defining the Team model

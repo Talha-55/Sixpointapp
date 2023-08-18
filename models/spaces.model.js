@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
+const autoPopulate = require('mongoose-autopopulate');
 
 const SpacesSchema = new Schema({
     title: {
@@ -28,6 +29,6 @@ const SpacesSchema = new Schema({
     }]
 });
 
-// SpacesSchema.plugin(autoPopulate);
+SpacesSchema.plugin(autoPopulate);
 const Spaces = mongoose.model('Spaces', SpacesSchema);
 module.exports = Spaces;

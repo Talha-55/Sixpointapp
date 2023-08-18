@@ -14,11 +14,17 @@ const FrontOfficerSchema = new Schema({
         unique: true,
         match: [/.+\@.+\..+/, "Please enter a valid email address"]
     },
+    role:{
+        type: String,
+        required:true
+    },
     password: {
         type: String,
         required: true,
     }
-});
+},
+   {timestamps:true}
+);
 
 const FrontOfficer = mongoose.model('FrontOfficer', FrontOfficerSchema);
 module.exports = FrontOfficer;
